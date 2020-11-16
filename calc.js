@@ -43,7 +43,7 @@ function getPress(event) {
         return display(0);
       
       case '1/x':
-        return display(1/x);    // not ready
+        return display(1/obiekt.value);   
 
       case 'x2':
         return display( exponent( obiekt.value ) );
