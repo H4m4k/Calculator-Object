@@ -11,7 +11,8 @@ functionKeys.addEventListener( 'click' , getPress );
 const obiekt = {
   value: 0,
   operator: '',
-  secondValue: 0
+  secondValue: 0,
+  state: ''
 } ;
 
 
@@ -33,27 +34,27 @@ function getPress(event) {
     switch(event.target.textContent) {
       
       case '%':
-        return display ( '%' );
+        return display ( '%' );   // not ready
         
       case 'CE':
-        return display ( 'CE');
+        return display ( 'CE');   // not ready
 
       case 'C':
         return display(0);
       
       case '1/x':
-        return display(1/x);
+        return display(1/x);    // not ready
 
       case 'x2':
         return display( exponent( obiekt.value ) );
     }
 
-  } else if (event.target.classList.contains( 'divide' )) {
+  } else if (event.target.classList.contains( 'divide' )) { // divide
 
     obiekt.operator = '/';
     return display( screen.textContent += obiekt.operator );
 
-  } else if ( event.target.classList.contains( 'number' )) { // register clicks on keyboard
+  } else if ( event.target.classList.contains( 'number' )) {  // keyboard listener
 
     switch(screen.textContent) {
 
