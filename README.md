@@ -6,7 +6,7 @@ Secondly a lot of code has been written more than once and that is one of base p
 
 /* Project guidelines:
 
-Screen = arrays of objects ??
+Screen = value operator secondValue
 
 Number object keys:                             // done
 1. value
@@ -17,8 +17,8 @@ Number object keys:                             // done
 
 Operation object keys:
 1. Type of operation ( 
-  a. + 
-  b. - 
+  a. +
+  b. -
   c. * 
   d. / 
   e. sqr  // done
@@ -31,9 +31,7 @@ Operation object keys:
 
 Result object keys
 1. value
-2. sign
-3. integer or decimal
-4. state
+2. state
 
 Functions:
 1. opSelector - operation selector
@@ -42,9 +40,12 @@ Functions:
 4. delScreenElement - remove last number added
 5. displayFunction                             // done
 6. getPress - listener for pressing of buttons // done
+7. checkOperator - checks for any adjacent . or arithmetic operators  // done
+8. clear - resets the display, object state, object operator  // done
 
 QoL:
-1. Prevent multiple signs in adjacent places 
-2. Prevent multiple decimal separators in adjacent places
+1. Prevent multiple signs in adjacent places    // done
+2. Prevent multiple decimal separators in adjacent places // done
 3. Math round numbers that overexpand the display size
+
 */
