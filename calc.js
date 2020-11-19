@@ -92,9 +92,10 @@ function display ( content ) {
     case '':
       obiekt.value = content*1;
       return screen.textContent = `${obiekt.value}`;
+
     case 'operatorPresent':
-      obiekt.state = 'secondaryValue';
       return screen.textContent = `${obiekt.value}${obiekt.operator}`
+
     case 'secondaryValue':
       obiekt.secondValue = content*1;
       return screen.textContent = `${obiekt.value}${obiekt.operator}${obiekt.secondValue}`
@@ -109,6 +110,7 @@ function clear() {
 
 function operatorCheck ( operator ) {
   if ( !screen.textContent.includes(operator)) {
+
     switch (obiekt.state) {
       case '':
         obiekt.operator = operator;  
@@ -116,11 +118,9 @@ function operatorCheck ( operator ) {
         return display(screen.textContent + obiekt.operator)
 
       case 'operatorPresent':
-        screen.textContent = screen.textContent;
+        return display(screen.textContent);
       }  
 
-    console.log(operator);
-    (operator === '.')? '' : obiekt.operator = operator;
   } 
 }
 
@@ -160,8 +160,8 @@ Functions:
 4. delScreenElement - remove last number added
 5. displayFunction                             // done
 6. getPress - listener for pressing of buttons // done
-7. checkOperator - checks for any adjacent . or arithmetic operators
-8. clear - resets the display, object state, object operator
+7. checkOperator - checks for any adjacent . or arithmetic operators  // done
+8. clear - resets the display, object state, object operator  // done
 
 QoL:
 1. Prevent multiple signs in adjacent places    // done
