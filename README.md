@@ -17,8 +17,8 @@ Number object keys:                             // done
 
 Operation object keys:
 1. Type of operation ( 
-  a. + 
-  b. - 
+  a. +
+  b. -
   c. * 
   d. / 
   e. sqr  // done
