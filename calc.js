@@ -4,8 +4,8 @@ const keys = document.querySelector('#keyboard');
 const arithmeticKeys = document.querySelector('#arithmetic');
 const functionKeys = document.querySelector('#functions');
 
-keys.addEventListener('click', getPress);
-arithmeticKeys.addEventListener('click', getPress);
+keys.addEventListener('click', getKeyPress);
+arithmeticKeys.addEventListener('click', getKeyPress);
 functionKeys.addEventListener('click', getPress);
 
 const obiekt = {
@@ -16,10 +16,10 @@ const obiekt = {
 };
 
 const OPERATOR_PRESENT_KEY = 'operatorPresent'
-const SECONDAY_VALUE_KEY = 'secondaryValue'
+const SECONDARY_VALUE_KEY = 'secondaryValue'
 
 const OPERATIONS = {
-  DEVIDE_BY_X: '1/x',
+  DIVIDE_BY_X: '1/x',
   CHANGE_SYMBOL: '+/-',
   CE: 'CE',
   C: 'C',
@@ -40,7 +40,7 @@ const NUMBER_KEYBOARD_SIGN_CLASS = [...BUTTON_CLASS, TYPES.SIGN]
 const NUMBER_KEYBOARD_DOT_CLASS = [...BUTTON_CLASS, TYPES.DOT]
 const ARITHMETIC_KEYBOARD_CLASS = [...BUTTON_CLASS, TYPES.OPERATION]
 const FUNCTION_KEYBOARD_CLASS = [...BUTTON_CLASS, TYPES.FUNCTION]
-const SQRT_KAYBOARD_CLASS = [...FUNCTION_KEYBOARD_CLASS, TYPES.SQRT]
+const SQRT_KEYBOARD_CLASS = [...FUNCTION_KEYBOARD_CLASS, TYPES.SQRT]
 
 const CALCULATOR_KEYBOARD = [
   { order: 0, value: 7, classes: NUMBER_KEYBOARD_CLASS },
@@ -70,9 +70,9 @@ const FUNCTIONS_KEYBOARD = [
   { order: 0, value: OPERATIONS.PERCENT, classes: FUNCTION_KEYBOARD_CLASS },
   { order: 1, value: OPERATIONS.CE, classes: FUNCTION_KEYBOARD_CLASS },
   { order: 2, value: OPERATIONS.C, classes: FUNCTION_KEYBOARD_CLASS },
-  { order: 3, value: OPERATIONS.DEVIDE_BY_X, classes: FUNCTION_KEYBOARD_CLASS },
+  { order: 3, value: OPERATIONS.DIVIDE_BY_X, classes: FUNCTION_KEYBOARD_CLASS },
   { order: 4, value: 'x<sup>2</sup>', classes: FUNCTION_KEYBOARD_CLASS, html: true },
-  { order: 5, value: '&#8730;', classes: SQRT_KAYBOARD_CLASS, html: true },
+  { order: 5, value: '&#8730;', classes: SQRT_KEYBOARD_CLASS, html: true },
 ]
 
 const renderButtons = (root, elements) => {
@@ -112,41 +112,63 @@ const functionKeysOperations = (operation) => {
       clear();
       return display(0);
 
-    case OPERATIONS.DEVIDE_BY_X:
+    case OPERATIONS.DIVIDE_BY_X:
       return display(1 / obiekt.value);
 
     case 'x2':
       return display(exponent(obiekt.value));
   }
 }
-function getPress(event) {
-  const operation = event.target.dataset.operator || null
-  if (event.target.classList.contains(TYPES.SQRT)) {  // functions listener
 
-    return display(Math.sqrt(obiekt.value));
+function getKeyPress(event) {
+  switch (event.target.textContent) {
 
-  } else if (event.target.classList.contains(TYPES.FUNCTION)) {   // functions listener
-    return functionKeysOperations(event.target.textContent)
+    case TYPES.SQRT:
+      return display(Math.sqrt(obiekt.value));
 
-  } else if(operation) {
-      obiekt.operator = operation;
-      return operatorCheck(operation);
-  } else if (event.target.classList.contains(TYPES.NUMBER)) {  // keyboard listener
-    switch (screen.textContent) {
+    case TYPES.FUNCTION:
+      return functionKeysOperations(event.target.textContent);
 
-      case '0':
-        return display(screen.textContent = event.target.textContent);
-    } // end of switch
+    case TYPES.NUMBER:
+      if(screen.textContent === 0) return display(screen.textContent = event.target.textContent);
 
-    return display(screen.textContent += event.target.textContent);
+      return display(screen.textContent += event.target.textContent);
 
-  } else if (event.target.classList.contains(TYPES.SIGN)) { // sign change
-    return display(screen.textContent *= -1);
-
-  } else if (event.target.classList.contains(TYPES.DOT)) {
-    operatorCheck(event.target.textContent);
+    case TYPES.SIGN:
+      return display(screen.textContent *= -1)
   }
-}
+} 
+
+// function getPress(event) {
+
+//   const operation = event.target.dataset.operator || null
+//   // if (event.target.classList.contains(TYPES.SQRT)) {  // functions listener
+
+//   //   return display(Math.sqrt(obiekt.value));
+
+//   // } else if (event.target.classList.contains(TYPES.FUNCTION)) {   // functions listener
+//   //   return functionKeysOperations(event.target.textContent)
+
+//   if(operation) {
+//       obiekt.operator = operation;
+//       return operatorCheck(operation);
+
+//   // } else if (event.target.classList.contains(TYPES.NUMBER)) {  // keyboard listener
+//   //   switch (screen.textContent) {
+
+//   //     case '0':
+//   //       return display(screen.textContent = event.target.textContent);
+//   //   } // end of switch
+
+//   //   return display(screen.textContent += event.target.textContent);
+
+//   } else if (event.target.classList.contains(TYPES.SIGN)) { // sign change
+//     return display(screen.textContent *= -1);
+
+//   } else if (event.target.classList.contains(TYPES.DOT)) {
+//     operatorCheck(event.target.textContent);
+//   }
+// }
 
 
 function exponent(number) {
@@ -163,7 +185,7 @@ function display(content) {
     case OPERATOR_PRESENT_KEY:
       return screen.textContent = `${obiekt.value}${obiekt.operator}`
 
-    case SECONDAY_VALUE_KEY:
+    case SECONDARY_VALUE_KEY:
       obiekt.secondValue = content * 1;
       return screen.textContent = `${obiekt.value}${obiekt.operator}${obiekt.secondValue}`
   }
@@ -191,6 +213,8 @@ function operatorCheck(operator) {
 }
 
 initialize()
+
+
 /* Project guidelines:
 
 Screen = value operator secondValue
