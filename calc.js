@@ -123,6 +123,8 @@ const functionKeysOperations = (operation) => {
 } // end.of.function
 
 
+// ----=== MAIN FUNCTIONS ===----- 
+
 const numberKeys = (type) => {
     switch (screen.textContent) {
 
@@ -134,13 +136,27 @@ const numberKeys = (type) => {
 
 
 function getNumberKey(numberEvent) {
-    if (numberEvent.target.classList.contains(TYPES.NUMBER)) {  // keyboard listener
-        return numberKeys(numberEvent.target.textContent)
+    if (numberEvent.target.classList.contains(TYPES.NUMBER)) { 
+        return numberKeys(numberEvent.target.textContent);
+    } else if (numberEvent.target.classList.contains(TYPES.DOT)) {
+        return operatorCheck(numberEvent.target.textContent);
+    } else if (numberEvent.target.classList.contains(TYPES.SIGN)) { // sign change
+        return display(screen.textContent *= -1);
+
     }
 } // end.of.function
 
-function getArithmeticOperator(operator) {
-    const operation = operator.target.dataset.operator || null
+
+function getArithmeticOperator(operatorEvent) {
+    const operation = operatorEvent.target.dataset.operator || null
+
+    switch(operation) {
+        case 'DEL':
+            return del();
+
+        case '=': // not ready
+
+    }
 
     if (operation) {
         obiekt.operator = operation;
@@ -150,18 +166,12 @@ function getArithmeticOperator(operator) {
 
 
 function getFunctionPress(event) {
-    if (event.target.classList.contains(TYPES.SQRT)) {  // functions listener
+    if (event.target.classList.contains(TYPES.SQRT)) {  
         return display(Math.sqrt(obiekt.value));
 
-    } else if (event.target.classList.contains(TYPES.FUNCTION)) {   // functions listener
+    } else if (event.target.classList.contains(TYPES.FUNCTION)) { 
         return functionKeysOperations(event.target.textContent)
-
-    } else if (event.target.classList.contains(TYPES.SIGN)) { // sign change
-        return display(screen.textContent *= -1);
-
-    } else if (event.target.classList.contains(TYPES.DOT)) {
-        operatorCheck(event.target.textContent);
-    }
+    } 
 } // end.of.function
 
 
@@ -169,43 +179,71 @@ function exponent(number) {
     return screen.textContent = number ** 2;
 } // end.of.function
 
-
+let temp = 0;
 function display(content) {
+   /* display is controlled through changing the state of the object 'obiekt'.
+    The display sentence is completed through assigning values to object keys.
+    Display components are : 
+    1st - obiekt.value
+    2nd - obiekt.operator
+    3rd - obiekt.secondValue 
+   */
 
     switch (obiekt.state) {
         case '':
-            obiekt.value = content * 1;
+            obiekt.value = content;
             return screen.textContent = `${obiekt.value}`;
 
         case OPERATOR_PRESENT_KEY:
-            return screen.textContent = `${obiekt.value}${obiekt.operator}`
+            obiekt.state = SECONDARY_VALUE_KEY;
+            return screen.textContent = `${obiekt.value}${obiekt.operator}`;
 
         case SECONDARY_VALUE_KEY:
-            obiekt.secondValue = content * 1;
-            return screen.textContent = `${obiekt.value}${obiekt.operator}${obiekt.secondValue}`
+            secondValue();
+            return screen.textContent= `${obiekt.value}${obiekt.operator}${obiekt.secondValue}`;
     }
-} // end.of.function
+ } // end.of.function
 
+
+function secondValue() {
+    let arr = screen.textContent.split(obiekt.operator);
+    obiekt.secondValue = arr[1]*1;
+    return;
+}
 
 function clear() {
     obiekt.operator = '';
     obiekt.state = '';
-}
+    obiekt.value = '';
+    obiekt.secondValue = '';
+} // end.of.function
 
 
 function operatorCheck(operator) {
     if (!screen.textContent.includes(operator)) {
         switch (obiekt.state) {
             case '':
-                obiekt.operator = operator;
-                obiekt.state = OPERATOR_PRESENT_KEY;
-                return display(screen.textContent + obiekt.operator)
+                if (operator === '=') {
+                    obiekt.state = 'equal';
+                    obiekt.state = OPERATOR_PRESENT_KEY;
+               }  else if(operator === '.') {
+                    obiekt.state = '';
+                    return display(obiekt.value+operator);
+                } else {
+                    obiekt.operator = operator;
+                    obiekt.state = OPERATOR_PRESENT_KEY;
+                    return display();
+                }
 
             case OPERATOR_PRESENT_KEY:
-                return display(screen.textContent);
-
+                return display();
         }
     }
+} // end.of.function
+
+
+function del() {
+    return display(screen.textContent.slice(0,-1));
 } // end.of.function
 
 
