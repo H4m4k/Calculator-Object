@@ -12,7 +12,8 @@ const obiekt = {
     value: 0,
     operator: '',
     secondValue: 0,
-    state: ''
+    state: '',
+    result: ''
 };
 
 const OPERATOR_PRESENT_KEY = 'operatorPresent'
@@ -98,17 +99,19 @@ const initialize = () => {
     renderButtons(operationKeys, FUNCTIONS_KEYBOARD)
 }
 
-// ----=== ARROW FUNCTIONS ===----- 
-
 
 const functionKeysOperations = (operation) => {
+    
     switch (operation) {
-
+    
         case OPERATIONS.PERCENT:
-            return display(OPERATIONS.PERCENT);   // not ready
+            return display();   // not ready
 
         case OPERATIONS.CE:
-            return display(OPERATIONS.CE);   // not ready
+            obiekt.secondValue = '';
+            obiekt.operator = '';
+            obiekt.state = '';
+            return display(obiekt.value);  
 
         case OPERATIONS.C:
             clear();
@@ -123,7 +126,7 @@ const functionKeysOperations = (operation) => {
 } // end.of.function
 
 
-// ----=== MAIN FUNCTIONS ===----- 
+// ----=== LISTENER FUNCTIONS ===----- 
 
 const numberKeys = (type) => {
     switch (screen.textContent) {
@@ -140,21 +143,20 @@ function getNumberKey(numberEvent) {
         return numberKeys(numberEvent.target.textContent);
     } else if (numberEvent.target.classList.contains(TYPES.DOT)) {
         return operatorCheck(numberEvent.target.textContent);
-    } else if (numberEvent.target.classList.contains(TYPES.SIGN)) { // sign change
+    } else if (numberEvent.target.classList.contains(TYPES.SIGN)) { 
         return display(screen.textContent *= -1);
-
     }
 } // end.of.function
 
 
 function getArithmeticOperator(operatorEvent) {
     const operation = operatorEvent.target.dataset.operator || null
-
     switch(operation) {
         case 'DEL':
             return del();
 
         case '=': // not ready
+            return screen.textContent = calculate();
 
     }
 
@@ -175,11 +177,15 @@ function getFunctionPress(event) {
 } // end.of.function
 
 
+
+// ----=== SUPPORT FUNCTIONS ===----- 
+
+
 function exponent(number) {
     return screen.textContent = number ** 2;
 } // end.of.function
 
-let temp = 0;
+
 function display(content) {
    /* display is controlled through changing the state of the object 'obiekt'.
     The display sentence is completed through assigning values to object keys.
@@ -187,8 +193,9 @@ function display(content) {
     1st - obiekt.value
     2nd - obiekt.operator
     3rd - obiekt.secondValue 
-   */
+    */
 
+    console.log(`value = ${obiekt.value} operator = ${obiekt.operator} secondValue =  ${obiekt.secondValue}`)
     switch (obiekt.state) {
         case '':
             obiekt.value = content;
@@ -207,15 +214,16 @@ function display(content) {
 
 function secondValue() {
     let arr = screen.textContent.split(obiekt.operator);
+    obiekt.value = arr[0]*1;
     obiekt.secondValue = arr[1]*1;
     return;
-}
+} // end.of.function
 
 function clear() {
-    obiekt.operator = '';
-    obiekt.state = '';
     obiekt.value = '';
+    obiekt.operator = '';
     obiekt.secondValue = '';
+    obiekt.state = '';
 } // end.of.function
 
 
@@ -223,17 +231,17 @@ function operatorCheck(operator) {
     if (!screen.textContent.includes(operator)) {
         switch (obiekt.state) {
             case '':
-                if (operator === '=') {
-                    obiekt.state = 'equal';
-                    obiekt.state = OPERATOR_PRESENT_KEY;
-               }  else if(operator === '.') {
-                    obiekt.state = '';
-                    return display(obiekt.value+operator);
-                } else {
-                    obiekt.operator = operator;
-                    obiekt.state = OPERATOR_PRESENT_KEY;
-                    return display();
-                }
+            if (operator === '.') {
+                console.log(operator)
+                obiekt.state = '';
+                return display(obiekt.value + operator);
+            } else if (operator === '=') {
+                obiekt.state = 'equal'; // obiekt.state should be cleared
+            } else {
+                obiekt.operator = operator;
+                obiekt.state = OPERATOR_PRESENT_KEY;
+                return display();
+            }
 
             case OPERATOR_PRESENT_KEY:
                 return display();
@@ -246,9 +254,39 @@ function del() {
     return display(screen.textContent.slice(0,-1));
 } // end.of.function
 
+function calculate() {
+    switch (obiekt.operator) {
+        case '':
+            break;
+        
+        case '/':
+            return setResult(obiekt.value / obiekt.secondValue);
+
+        case '*':
+            return setResult(obiekt.value * obiekt.secondValue);
+        
+        case '+':
+            return setResult(obiekt.value + obiekt.secondValue);
+
+        case '-':
+            return setResult(obiekt.value - obiekt.secondValue);
+    }
+} // end.of.function
+
+function setResult(result) {
+    clear();
+    return obiekt.value = result;
+} // end.of.function
+
+
+// function round(number){
+//     if( number.length > 15 ) {
+//         console.log( ' round działa bo liczba ma ' + number.length + ' znaków')
+//         return number.substring(0,15);
+//     }
+// }
 
 initialize()
-
 
 /* Project guidelines:
 
@@ -259,38 +297,41 @@ Number object keys:                             // done
 2. operator - for selecting the operation
 3. secondValue
   a. state ( before or after operation) ??
-  b. Possible sub-states ??
+  b. result ( clear the screen after pressing equal and return the value to 1.)
 
 Operation object keys:
 1. Type of operation (
-  a. +
-  b. -
-  c. *
-  d. /
+  a. +  // done
+  b. -  // done
+  c. *  // done
+  d. /  // done
   e. sqr  // done
   f. **   // done
   g. %
   h. 1/x  // done
-  i. CE
+  i. CE   // done
   j. C    // done
-  k. DEL
+  k. DEL  // done
 
+
+// Used as a key of object instead of a independent object 
 Result object keys
 1. value
 2. state
 
 Functions:
-1. opSelector - operation selector
+1. opSelector - ad.7 operotarCheck  // done 
 2. setSign - set sign of number                // done
-3. checkState - check the state of the number ( before or after operation)
-4. delScreenElement - remove last number added
-5. displayFunction                             // doneFunctionPress - listener for pressing of buttons // done
+3. checkState - check the state of the number ( before or after operation)  // done   operator check and display use this in switch/case
+4. delScreenElement - remove last number added  // done
+5. displayFunction                             // done
+6. FunctionPress - listener for pressing of buttons // done
 7. checkOperator - checks for any adjacent . or arithmetic operators  // done
 8. clear - resets the display, object state, object operator  // done
 
 QoL:
 1. Prevent multiple signs in adjacent places    // done
 2. Prevent multiple decimal separators in adjacent places // done
-3. Math round numbers that overexpand the display size
-
+3. Math round (substring or toFixed with regular expression) numbers that overexpand the display size
+4. Allow operations on two decimal numbers
 */
