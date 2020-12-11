@@ -310,7 +310,7 @@ Operation object keys:
   d. /  // done
   e. sqr  // done
   f. **   // done
-  g. %
+  g. %    // done
   h. 1/x  // done
   i. CE   // done
   j. C    // done
@@ -335,6 +335,6 @@ Functions:
 QoL:
 1. Prevent multiple signs in adjacent places    // done
 2. Prevent multiple decimal separators in adjacent places // done
-3. Math round (substring or toFixed with regular expression) numbers that overexpand the display size
+3. Math round (substring or toFixed with regular expression) numbers that overexpand the display size  // done
 4. Allow operations on two decimal numbers
 */
