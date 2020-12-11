@@ -105,7 +105,7 @@ const functionKeysOperations = (operation) => {
     switch (operation) {
     
         case OPERATIONS.PERCENT:
-            return display();   // not ready
+            return calculate('runPercent');   // not ready
 
         case OPERATIONS.CE:
             obiekt.secondValue = '';
@@ -118,10 +118,10 @@ const functionKeysOperations = (operation) => {
             return display(0);
 
         case OPERATIONS.DIVIDE_BY_X:
-            return display(1 / obiekt.value);
+            return display(setResult(1 / obiekt.value));
 
         case 'x2':
-            return display(exponent(obiekt.value));
+            return display(setResult(exponent(obiekt.value)));
     }
 } // end.of.function
 
@@ -132,7 +132,7 @@ const numberKeys = (type) => {
     switch (screen.textContent) {
 
         case '0':
-            return display(screen.textContent = type);
+            return display(type);
     }
     return display(screen.textContent += type)
 }
@@ -144,7 +144,7 @@ function getNumberKey(numberEvent) {
     } else if (numberEvent.target.classList.contains(TYPES.DOT)) {
         return operatorCheck(numberEvent.target.textContent);
     } else if (numberEvent.target.classList.contains(TYPES.SIGN)) { 
-        return display(screen.textContent *= -1);
+        return display(obiekt.value *= -1);
     }
 } // end.of.function
 
@@ -155,9 +155,9 @@ function getArithmeticOperator(operatorEvent) {
         case 'DEL':
             return del();
 
-        case '=': // not ready
+        case '=': 
             return screen.textContent = calculate();
-
+        
     }
 
     if (operation) {
@@ -182,7 +182,7 @@ function getFunctionPress(event) {
 
 
 function exponent(number) {
-    return screen.textContent = number ** 2;
+    return setResult(screen.textContent = number ** 2);
 } // end.of.function
 
 
@@ -214,8 +214,9 @@ function display(content) {
 
 function secondValue() {
     let arr = screen.textContent.split(obiekt.operator);
-    obiekt.value = arr[0]*1;
-    obiekt.secondValue = arr[1]*1;
+    const [arrOne , arrTwo] = arr;
+    obiekt.value = arrOne*1;
+    obiekt.secondValue = arrTwo*1;
     return;
 } // end.of.function
 
@@ -230,13 +231,17 @@ function clear() {
 function operatorCheck(operator) {
     if (!screen.textContent.includes(operator)) {
         switch (obiekt.state) {
+
             case '':
+
             if (operator === '.') {
                 console.log(operator)
                 obiekt.state = '';
                 return display(obiekt.value + operator);
+
             } else if (operator === '=') {
                 obiekt.state = 'equal'; // obiekt.state should be cleared
+
             } else {
                 obiekt.operator = operator;
                 obiekt.state = OPERATOR_PRESENT_KEY;
@@ -254,37 +259,35 @@ function del() {
     return display(screen.textContent.slice(0,-1));
 } // end.of.function
 
-function calculate() {
+function calculate(test) {
     switch (obiekt.operator) {
         case '':
             break;
         
         case '/':
-            return setResult(obiekt.value / obiekt.secondValue);
+            return (test)?setResult(obiekt.value / percent()):setResult(obiekt.value / obiekt.secondValue);
 
         case '*':
-            return setResult(obiekt.value * obiekt.secondValue);
+            return (test)?setResult(obiekt.value * percent()):setResult(obiekt.value * obiekt.secondValue);
         
         case '+':
-            return setResult(obiekt.value + obiekt.secondValue);
+            return (test)?setResult(obiekt.value + percent()):setResult(obiekt.value + obiekt.secondValue);
 
         case '-':
-            return setResult(obiekt.value - obiekt.secondValue);
+            return (test)?setResult(obiekt.value - percent()):setResult(obiekt.value - obiekt.secondValue);
+
     }
 } // end.of.function
 
 function setResult(result) {
     clear();
-    return obiekt.value = result;
+    obiekt.value = result;
+    return screen.textContent = result.toString().substring(0,15);
 } // end.of.function
 
-
-// function round(number){
-//     if( number.length > 15 ) {
-//         console.log( ' round działa bo liczba ma ' + number.length + ' znaków')
-//         return number.substring(0,15);
-//     }
-// }
+function percent() {
+    return obiekt.secondValue = (obiekt.value * obiekt.secondValue)/100; 
+}
 
 initialize()
 
